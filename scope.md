@@ -1,3 +1,8 @@
+---
+layout: default
+---
+
+
 # Scope of the initiative
 The scope of the initiative is to open up the knowledge of traffic science to everyone, with open data, open tools, open tutorials, and open discussions.
 ## Background
@@ -54,3 +59,6 @@ Course project (large-scale examples)
 ## Advisory members
 
 Prof. Henry Liu, Prof. Saif Jabari, Prof. Michael Zhang, Prof. Toru Seo, Prof. Dan Work, Prof. Jonathan Sprinkle (details TBD) -->
+
+<br>
+<p align="left">(Posted by <a href="https://www.jijunyi.com/">Junyi Ji</a> and <a href="https://xingminw.github.io/">Xingmin Wang</a>   on September 29, 2024.)</p>

@@ -11,6 +11,10 @@ Go to the file: _config.yml.
     - A sample folder is created in the folder "freeway"
     - To add the following code in the markdown file:
         ```
+        ---
+        layout: default
+        ---
+        
         # Post Title
         <br>
         <p align="left">(Posted by <a href="https://www.jijunyi.com/">Junyi Ji</a> on September 29, 2024.)</p>
