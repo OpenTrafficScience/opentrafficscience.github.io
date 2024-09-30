@@ -1,3 +1,5 @@
+# Scope of the initiative
+
 ## Background
 Since the rise of big data and deep learning (starting around 2015), along with advancements in reinforcement learning (notably since AlphaGo) and large models (from 2022 onwards), transportation and traffic research has undergone significant transformations in various aspects. 
 
@@ -47,7 +49,8 @@ Online blogging (lecture)
 Online coding examples (Colab)
 
 Course project (large-scale examples)
-<!-- Advisory member can be updated later -->
-<!-- ## Advisory members
+
+<!-- Advisory member can be updated later
+## Advisory members
 
 Prof. Henry Liu, Prof. Saif Jabari, Prof. Michael Zhang, Prof. Toru Seo, Prof. Dan Work, Prof. Jonathan Sprinkle (details TBD) -->
