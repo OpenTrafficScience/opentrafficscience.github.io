@@ -1,5 +1,5 @@
 # Scope of the initiative
-
+The scope of the initiative is to open up the knowledge of traffic science to everyone, with open data, open tools, open tutorials, and open discussions.
 ## Background
 Since the rise of big data and deep learning (starting around 2015), along with advancements in reinforcement learning (notably since AlphaGo) and large models (from 2022 onwards), transportation and traffic research has undergone significant transformations in various aspects. 
 
