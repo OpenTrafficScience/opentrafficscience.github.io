@@ -2,16 +2,27 @@
 layout: default
 ---
 # Scope of the initiative
-The scope of the initiative is to open up the knowledge of traffic science to everyone, with open data, open tools, open tutorials, and open discussions.
-> Under construction!
+
+> Still under construction!
+
+The vision of open traffic science is to bridge the **world** and **times** for traffic science. The initiative is to open up the **knowledge** (fundamental problems) of traffic science to everyone, followed with open data, open tools, open tutorials, and open discussions.
+
 ## Background
-Since the rise of big data and deep learning (starting around 2015), along with advancements in reinforcement learning (notably since AlphaGo) and large models (from 2022 onwards), transportation and traffic research has undergone significant transformations in various aspects. 
+The origins of traffic science date back to 1950s, when pioneers like [Leslie C. Edie](https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Edie-Leslie-C), [Robert Herman](https://www.nae.edu/188205/ROBERT-HERMAN-19141997), [Robert E. Chandler](https://www.informs.org/Recognizing-Excellence/Award-Recipients/Robert-E.-Chandler), [Denos Gazis](https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Gazis-Denos-C), [Elliott W. Montroll](https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Montroll-Elliott-W), [Refrey B. Potts](https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Potts-Renfrey-B), and [Richard W. Rothery](https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Rothery-Richard-W) paved the way for this field. They conducted extensive field experiments, initiated the ISTTT symposium series, and authored several influential textbooks. 
+
+### Challenges with the times
+Since the rise of big data and deep learning (starting around 2015), along with advancements in reinforcement learning (notably since AlphaGo) and large models (from 2022 onwards), transportation and traffic research has undergone significant transformations in various aspects.
+
+### Challenges with the world
+There are couples of labs in the world leading the efforts to turn traffic science into the next level. However, the knowledge is still not open to everyone. Or saying, not all the students can have access to the same level of resources as the top labs. For example, NGSIM data, nearly all the traffic researchers know it and can use it. But what about the ring experiment data in 2006 in Japan? [It](http://traffic.phys.cs.is.nagoya-u.ac.jp/.) actually exists, but not everyone knows it.
 
 ## Scope
 
 The problems of transportation and traffic are very old ones.
 
-Traffic science can be traced back to 1956. Leslie C. Edie, Robert Herman, Robert E. Chandler, Denos Gazis, Elliott W. Montroll, Refrey B. Potts, and Richard W. Rothery opened up this direction that time. They did huge amount of field-testing work, opening up the ISTTT symposium series, and write few fantastic textbooks. In the era of connected and automated vehicles and artificial intelligence, 
+
+
+In the era of connected and automated vehicles and artificial intelligence, 
 
 We plan to revisit traffic science with emerging technologies and open data.
 
@@ -60,4 +71,4 @@ Course project (large-scale examples)
 Prof. Henry Liu, Prof. Saif Jabari, Prof. Michael Zhang, Prof. Toru Seo, Prof. Dan Work, Prof. Jonathan Sprinkle (details TBD) -->
 
 <br>
-<p align="left">(Posted by <a href="https://www.jijunyi.com/">Junyi Ji</a> and <a href="https://xingminw.github.io/">Xingmin Wang</a>   on September 29, 2024.)</p>
+<p align="left">(Posted by <a href="https://www.jijunyi.com/">Junyi Ji</a> and <a href="https://xingminw.github.io/">Xingmin Wang</a> on October 1, 2024.)</p>
