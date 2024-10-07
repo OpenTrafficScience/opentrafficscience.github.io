@@ -19,3 +19,6 @@ layout: default
 ## Collected from infrastructure
 - [NGSIM](https://ops.fhwa.dot.gov/trafficanalysistools/ngsim.htm). The Next Generation Simulation (NGSIM) program is an effort to develop a new generation of traffic simulation models based on the collection of detailed vehicle trajectory data. The data was collected from US-101, I-80, and I-880 in California.
 - [I-24 MOTION](https://i24motion.org/data).
+
+<br>
+<p align="left">(Posted by <a href="https://www.jijunyi.com/">Junyi Ji</a> on October 6, 2024.)</p>
