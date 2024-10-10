@@ -14,74 +14,23 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/images/favicon-32x32.png">
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-
         .image-container {
-            width: 130px;
-            height: 130px;
+            width: 130px; /* Adjust the size as needed */
+            height: 130px; /* Adjust the size as needed */
             overflow: hidden;
-            border-radius: 50%;
+            border-radius: 50%; /* This makes the div circular */
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 10px auto; /* Centers the image */
         }
 
         .image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-        }
-
-        .leaders-container {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .leader {
-            margin: 5px 0;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.9em;
-            color: #555;
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            margin-top: 20px;
-        }
-
-        footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        #busuanzi_container_site_uv {
-            display: block;
-            margin-top: 10px;
-        }
-
-        /* Media queries for responsiveness */
-        @media (max-width: 768px) {
-            .image-container {
-                width: 100px;
-                height: 100px;
-            }
-
-            .leader {
-                font-size: 0.9em;
-            }
+            object-fit: cover; /* Ensures the image covers the div area */
         }
     </style>
+
   </head>
 
   <body>
@@ -109,26 +58,36 @@
       <div class="wrapper-footer">
         <div class="container">
           <footer class="footer">
-            <div class="image-container">
-              <img src="https://www.opentraffic.science/images/xingmin_junyi_itsc24.JPG" alt="Circular Image"/>
-            </div>
+<!--             {% include svg-icons.html %} -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
-            <div class="leaders-container">
-              <div class="leader">
-                Founder: <a href="https://www.jijunyi.com/">Junyi Ji</a> - Ph.D. Student @Vanderbilt
-              </div>
-              <div class="leader">
-                Co-founder: <a href="https://xingminw.github.io/">Xingmin Wang</a> - Postdoc @UMich
-              </div>
-              <p>Views are our own.</p>
-            </div>
+<div align="center">
 
-            <span id="busuanzi_container_site_uv">
-              <span id="busuanzi_value_site_uv"></span> <span>unique visitors</span>
-            </span>
-            <p>
-              @<a href="https://www.opentraffic.science/">opentraffic.science</a>
-            </p>
+<font color = gray>
+  <div class="image-container">
+    <img align="middle" src="https://www.opentraffic.science/images/xingmin_junyi_itsc24.JPG" width="130" alt="Circular Image"/>
+  </div>
+  <div class="leaders-container" align="center">
+    <div class="leader">
+      Founder: <a href="https://www.jijunyi.com/">Junyi Ji</a> - Ph.D. Student @Vanderbilt
+    </div>
+    <div class="leader">
+      Co-founder: <a href="https://xingminw.github.io/">Xingmin Wang</a> - Postdoc @UMich
+    </div>
+    Views are our own.
+  </div>
+<span id = "busuanzi_container_site_uv">
+  <span id = "busuanzi_value_site_uv"></span> <span>unique visitors</span>
+</span>
+  @<a href="https://www.opentraffic.science/">opentraffic.science</a>
+<!-- &
+<span id = "busuanzi_container_site_pv">
+  <span id = "busuanzi_value_site_pv"></span> <span>views</span>
+</span> -->
+</font>
+</div>
+
           </footer>
         </div>
       </div>
