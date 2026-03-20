@@ -24,4 +24,6 @@ window.MathJax = {
 
 ## Knowledge Repository
 
-Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his mentorship, Junyi Ji developed this repository to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
+Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, Junyi Ji developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
+
+### 1st Commit
