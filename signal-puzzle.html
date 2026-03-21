@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanderbilt 21st Eve S. Signal Simulator</title>
+    <style>
+        body {
+            font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { margin-top: 0; font-size: 1.5em; color: #343a40; }
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .controls {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            border: 1px solid #dee2e6;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        .visuals {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            height: 700px;
+        }
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        canvas {
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+        }
+        label { font-size: 0.85em; color: #495057; text-transform: uppercase; letter-spacing: 0.05em; font-weight: bold; }
+        input[type="range"] { width: 100%; cursor: pointer; }
+        .value-display { font-weight: bold; color: #28a745; }
+        .legend { font-size: 0.8em; color: #6c757d; display: flex; gap: 15px; margin-top: 5px; }
+        .legend span { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <h1>Vanderbilt 21st Eve S. Signal Simulator</h1>
+
+    <div class="dashboard">
+        <div class="controls">
+            <div class="control-group">
+                <label>Cycle Length (<span id="cycleVal" class="value-display">100</span>s)</label>
+                <input type="range" id="cycle" min="60" max="150" value="100">
+            </div>
+            <div class="control-group">
+                <label>Green Split (<span id="splitVal" class="value-display">60</span>%)</label>
+                <input type="range" id="split" min="30" max="80" value="60">
+            </div>
+            <div class="control-group">
+                <label>Int 2 Offset (<span id="off2Val" class="value-display">20</span>s)</label>
+                <input type="range" id="offset2" min="0" max="150" value="20">
+            </div>
+            <div class="control-group">
+                <label>Int 3 Offset (<span id="off3Val" class="value-display">40</span>s)</label>
+                <input type="range" id="offset3" min="0" max="150" value="40">
+            </div>
+            <div class="control-group">
+                <label>Int 4 Offset (<span id="off4Val" class="value-display">60</span>s)</label>
+                <input type="range" id="offset4" min="0" max="150" value="60">
+            </div>
+            <div class="control-group">
+                <label>Demand (<span id="demandVal" class="value-display">800</span> vph)</label>
+                <input type="range" id="demand" min="200" max="1800" step="50" value="800">
+            </div>
+            <div class="control-group">
+                <label>Arrival Type</label>
+                <select id="arrivalType" style="padding: 5px; border-radius: 4px; border: 1px solid #ced4da; font-family: inherit;">
+                    <option value="normal">Normal</option>
+                    <option value="poisson">Poisson</option>
+                    <option value="uniform">Uniform</option>
+                </select>
+            </div>
+            <div class="control-group" style="justify-content: end;">
+                <button id="toggleSim" style="padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; font-family: inherit; font-weight: bold;">Start Simulation</button>
+            </div>
+        </div>
+
+        <div class="visuals">
+            
+            <div class="canvas-container">
+                <label>Live Corridor (Distance)</label>
+                <canvas id="simCanvas" width="200" height="700"></canvas>
+            </div>
+
+            <div class="canvas-container" style="flex-grow: 1;">
+                <label>Time-Space Diagram (Last 1.5 Cycles)</label>
+                <canvas id="tsdCanvas" width="900" height="700"></canvas>
+                <div class="legend">
+                    <span><span class="dot" style="background: #3b82f6;"></span> Lab-side trajectories</span>
+                    <span><span class="dot" style="background: #ec4899;"></span> Campus-side trajectories</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<script>
+    // --- System Parameters ---
+    let cycle = 100;
+    let split = 0.6; 
+    let demandStr = 800; // Vehicles per hour per direction
+    let arrivalDist = 'normal';
+    let simTime = 0; 
+    let lastTime = performance.now();
+    let historyWindow = 150; // Show the last 150 seconds of history
+    let isRunning = false;
+
+    // Intersections placed along the Y axis
+    let intersections = [
+        { y: 550-469, offset: 0, name: "Egghill" },
+        { y: 550-237, offset: 20, name: "Taco" },
+        { y: 550-88, offset: 40, name: "Grand" },
+        { y: 550, offset: 60, name: "Broadway" }
+    ];
+
+    let activeVehicles = [];
+    let completedTrajectories = []; // Store lines for vehicles that left the screen
+
+    // --- IDM Parameters ---
+    const v0 = 15; // Desired speed (m/s)
+    const T = 1.5; // Safe time headway (s)
+    const s0 = 2; // Minimum gap (m)
+    const a = 1.5; // Max acceleration (m/s^2)
+    const b = 2.0; // Comfortable deceleration (m/s^2)
+
+    // --- Setup ---
+    const tsdCanvas = document.getElementById('tsdCanvas');
+    const tsdCtx = tsdCanvas.getContext('2d');
+    const simCanvas = document.getElementById('simCanvas');
+    const simCtx = simCanvas.getContext('2d');
+
+    // --- High-Res Canvas Setup ---
+    const simW = 200, simH = 700;
+    const tsdW = 900, tsdH = 700;
+    
+    function makeHighRes(canvas, ctx, w, h) {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.scale(dpr, dpr);
+    }
+    
+    makeHighRes(simCanvas, simCtx, simW, simH);
+    makeHighRes(tsdCanvas, tsdCtx, tsdW, tsdH);
+
+    // --- UI Listeners ---
+    const updateUI = () => {
+        cycle = parseInt(document.getElementById('cycle').value);
+        split = parseInt(document.getElementById('split').value) / 100;
+        demandStr = parseInt(document.getElementById('demand').value);
+        arrivalDist = document.getElementById('arrivalType').value;
+        intersections[1].offset = parseInt(document.getElementById('offset2').value) % cycle;
+        intersections[2].offset = parseInt(document.getElementById('offset3').value) % cycle;
+        intersections[3].offset = parseInt(document.getElementById('offset4').value) % cycle;
+        historyWindow = cycle * 1.5; // Dynamically update window to 1.5x cycle length
+
+        document.getElementById('cycleVal').innerText = cycle;
+        document.getElementById('splitVal').innerText = Math.round(split * 100);
+        document.getElementById('demandVal').innerText = demandStr;
+        document.getElementById('off2Val').innerText = intersections[1].offset;
+        document.getElementById('off3Val').innerText = intersections[2].offset;
+        document.getElementById('off4Val').innerText = intersections[3].offset;
+
+        if (!isRunning) {
+            drawSim();
+            drawTSD();
+        }
+    };
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', updateUI));
+
+    const toggleBtn = document.getElementById('toggleSim');
+    toggleBtn.addEventListener('click', () => {
+        isRunning = !isRunning;
+        toggleBtn.innerText = isRunning ? 'Pause Simulation' : 'Start Simulation';
+        toggleBtn.style.background = isRunning ? '#007bff' : '#28a745';
+        if (isRunning) {
+            lastTime = performance.now();
+            requestAnimationFrame(loop);
+        }
+    });
+
+    // --- Signal Logic ---
+    function getSignalState(intIdx, t) {
+        let offset = intersections[intIdx].offset;
+        // Handle negative time values cleanly for the historical drawing
+        let localTime = ((t - offset) % cycle + cycle) % cycle; 
+        let greenEnd = cycle * split;
+        let yellowStart = greenEnd - 4; 
+        
+        if (localTime < yellowStart) return 'green';
+        if (localTime < greenEnd) return 'yellow';
+        return 'red';
+    }
+
+    // --- Normal Distribution ---
+    function randomNormal(mean, stdDev) {
+        let u1 = 1 - Math.random(); 
+        let u2 = 1 - Math.random();
+        let randStdNormal = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+        return Math.max(1, mean + stdDev * randStdNormal);
+    }
+
+    // --- Vehicle Generators ---
+    let nextSBArrival = 0; // Southbound (moving down, +Y)
+    let nextNBArrival = 0; // Northbound (moving up, -Y)
+
+    function getNextArrivalTime() {
+        let meanHeadway = 3600 / demandStr;
+        if (arrivalDist === 'normal') {
+            // Provide a normal dist around the mean. Ensure we do not drop below min headway 1.5s
+            return Math.max(1.5, randomNormal(meanHeadway, meanHeadway * 0.4));
+        } else if (arrivalDist === 'poisson') {
+            // Exponential distribution for interarrival times
+            return -Math.log(1.0 - Math.random()) * meanHeadway;
+        } else if (arrivalDist === 'uniform') {
+            return meanHeadway;
+        }
+        return meanHeadway; // fallback
+    }
+
+    function spawnVehicles() {
+        if (simTime > nextSBArrival) {
+            activeVehicles.push({ id: Math.random(), y: -20, v: v0, dir: 1, length: 5, history: [] });
+            nextSBArrival = simTime + getNextArrivalTime();
+        }
+        if (simTime > nextNBArrival) {
+            activeVehicles.push({ id: Math.random(), y: 720, v: v0, dir: -1, length: 5, history: [] });
+            nextNBArrival = simTime + getNextArrivalTime();
+        }
+    }
+
+    // --- IDM Calculation ---
+    function updateVehicles(dt) {
+        let sbVehicles = activeVehicles.filter(v => v.dir === 1).sort((a, b) => b.y - a.y);
+        let nbVehicles = activeVehicles.filter(v => v.dir === -1).sort((a, b) => a.y - b.y);
+
+        function applyIDM(carList, direction) {
+            for (let i = 0; i < carList.length; i++) {
+                let car = carList[i];
+                let leader = carList[i - 1]; 
+                let nextSignal = null;
+
+                for (let j = 0; j < intersections.length; j++) {
+                    let sig = intersections[direction === 1 ? j : intersections.length - 1 - j];
+                    if ((direction === 1 && sig.y > car.y) || (direction === -1 && sig.y < car.y)) {
+                        let state = getSignalState(direction === 1 ? j : intersections.length - 1 - j, simTime);
+                        if (state !== 'green') { 
+                            nextSignal = sig;
+                            break;
+                        }
+                    }
+                }
+
+                let s = 9999; 
+                let deltaV = 0; 
+
+                if (leader) {
+                    s = Math.abs(leader.y - car.y) - (car.length + leader.length) / 2;
+                    deltaV = car.v - leader.v;
+                }
+                
+                if (nextSignal) {
+                    let distToSignal = Math.abs(nextSignal.y - car.y) - car.length / 2;
+                    if (distToSignal < s) {
+                        s = distToSignal;
+                        deltaV = car.v; 
+                    }
+                }
+
+                let s_star = s0 + Math.max(0, car.v * T + (car.v * deltaV) / (2 * Math.sqrt(a * b)));
+                let acceleration = a * (1 - Math.pow(car.v / v0, 4) - Math.pow(s_star / s, 2));
+
+                car.v += acceleration * dt;
+                if (car.v < 0) car.v = 0; 
+                car.y += car.v * dt * direction;
+
+                // Record History for TSD
+                car.history.push({ t: simTime, y: car.y });
+
+                // Prune old history to save memory
+                car.history = car.history.filter(pt => pt.t > simTime - historyWindow);
+            }
+        }
+
+        applyIDM(sbVehicles, 1);
+        applyIDM(nbVehicles, -1);
+
+        // Move completed vehicles to the history array
+        let stillActive = [];
+        activeVehicles.forEach(v => {
+            if (v.y > -50 && v.y < 750) {
+                stillActive.push(v);
+            } else {
+                completedTrajectories.push(v.history);
+            }
+        });
+        activeVehicles = stillActive;
+
+        // Clean up completed trajectories that have scrolled off-screen
+        completedTrajectories = completedTrajectories.filter(hist => hist[hist.length-1].t > simTime - historyWindow);
+    }
+
+    // --- Draw Live Corridor ---
+    function drawSim() {
+        simCtx.clearRect(0, 0, simW, simH);
+
+        // Draw Road Centerline
+        simCtx.strokeStyle = '#fff';
+        simCtx.lineWidth = 2;
+        simCtx.setLineDash([10, 15]);
+        simCtx.beginPath();
+        simCtx.moveTo(simW / 2, 0);
+        simCtx.lineTo(simW / 2, simH);
+        simCtx.stroke();
+        simCtx.setLineDash([]);
+
+        // Draw Intersections
+        intersections.forEach((int, i) => {
+            let state = getSignalState(i, simTime);
+            // MUTCD Standard Colors: Green (#006747), Yellow (#FFC20E), Red (#C8102E)
+            let color = state === 'green' ? '#006747' : (state === 'yellow' ? '#FFC20E' : '#C8102E');
+            
+            // Stop lines
+            simCtx.fillStyle = color;
+            simCtx.fillRect(simW/2 - 25, int.y - 2, 20, 4); // Southbound
+            simCtx.fillRect(simW/2 + 5, int.y - 2, 20, 4);  // Northbound
+
+            // Draw label
+            simCtx.fillStyle = '#000';
+            simCtx.font = '12px Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif';
+            simCtx.textAlign = 'left';
+            simCtx.fillText(int.name, 25, int.y - 10);
+        });
+
+        // Draw Vehicles
+        activeVehicles.forEach(car => {
+            simCtx.fillStyle = car.dir === 1 ? '#3b82f6' : '#ec4899';
+            let x = car.dir === 1 ? simW/2 - 20 : simW/2 + 10; 
+            simCtx.fillRect(x, car.y - (car.length/2), 10, car.length);
+        });
+    }
+
+    // --- Draw Time-Space Diagram ---
+    function drawTSD() {
+        tsdCtx.clearRect(0, 0, tsdW, tsdH);
+        
+        let startT = simTime - historyWindow;
+        
+        // Helper to convert time to X pixel
+        const getX = (t) => ((t - startT) / historyWindow) * tsdW;
+
+        // 1. Draw Signal Bands horizontally across time
+        intersections.forEach((int, i) => {
+            tsdCtx.lineWidth = 8;
+            for (let px = 0; px < tsdW; px += 2) {
+                let t = startT + (px / tsdW) * historyWindow;
+                let state = getSignalState(i, t);
+                // MUTCD Standard Colors for bands (can use RGBA if needed to soften, using solid standard here)
+                tsdCtx.strokeStyle = state === 'green' ? '#006747' : (state === 'yellow' ? '#FFC20E' : '#C8102E'); 
+                tsdCtx.beginPath();
+                tsdCtx.moveTo(px, int.y);
+                tsdCtx.lineTo(px + 2, int.y);
+                tsdCtx.stroke();
+            }
+        });
+
+        // 2. Draw Trajectories
+        tsdCtx.lineWidth = 2;
+        
+        const drawHistory = (historyArr, dir) => {
+            if (historyArr.length < 2) return;
+            tsdCtx.strokeStyle = dir === 1 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(236, 72, 153, 0.8)';
+            tsdCtx.beginPath();
+            let first = true;
+            historyArr.forEach(pt => {
+                if (pt.t >= startT) {
+                    let px = getX(pt.t);
+                    if (first) { tsdCtx.moveTo(px, pt.y); first = false; }
+                    else { tsdCtx.lineTo(px, pt.y); }
+                }
+            });
+            tsdCtx.stroke();
+        };
+
+        completedTrajectories.forEach(hist => {
+            let dir = hist[0].y < hist[hist.length-1].y ? 1 : -1;
+            drawHistory(hist, dir);
+        });
+
+        activeVehicles.forEach(car => {
+            drawHistory(car.history, car.dir);
+        });
+
+        // Draw current time indicator (Right edge is always present time, but a small marker helps)
+        tsdCtx.strokeStyle = '#fff';
+        tsdCtx.lineWidth = 1;
+        tsdCtx.beginPath();
+        tsdCtx.moveTo(tsdW - 1, 0);
+        tsdCtx.lineTo(tsdW - 1, tsdH);
+        tsdCtx.stroke();
+    }
+
+    // --- Main Loop ---
+    function loop(timestamp) {
+        if (!isRunning) return;
+
+        let dt = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+
+        // Accelerate simulation time slightly for better viewing
+        let timeStep = dt * 2.5; 
+        simTime += timeStep; 
+
+        spawnVehicles();
+        updateVehicles(timeStep);
+        drawSim();
+        drawTSD();
+
+        requestAnimationFrame(loop);
+    }
+
+    // Init
+    updateUI();
+    drawSim(); // Draw initial state
+    drawTSD(); // Draw initial state
+</script>
+</body>
+</html>
