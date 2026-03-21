@@ -27,3 +27,10 @@ window.MathJax = {
 Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, Junyi Ji developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
 
 ### 1st Commit
+#### Signal Coordination
+
+Signal coordination is the way to synchronize traffic signals along a corridor (main road) to create a "green wave" that allows vehicles to pass through multiple intersections without stopping. To better understand the dynamics of this system, I build a web-based simulator tool called [Signal Puzzle](https://www.opentraffic.science/signal-puzzle) that simulates the dynamics of traffic near Vanderbilt University. By changing the signal lengths, green split, offset, and the demand (arrival rate and the headway distribution), we can see how the time-space diagrams change.
+
+My observations:
+- The red lights act like a "transformer," converting the arrival pattern into a different departure pattern.
+- The bidirectional nature of the traffic flow makes the problem more complex, as the signal coordination needs to consider both directions of traffic.
