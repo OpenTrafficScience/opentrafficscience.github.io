@@ -96,6 +96,10 @@
                     <option value="uniform">Uniform</option>
                 </select>
             </div>
+            <div class="control-group">
+                <label>Time Lapse (<span id="speedVal" class="value-display">2.5</span>x)</label>
+                <input type="range" id="speed" min="0.1" max="10" step="0.1" value="2.5">
+            </div>
             <div class="control-group" style="justify-content: end;">
                 <button id="toggleSim" style="padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; font-family: inherit; font-weight: bold;">Start Simulation</button>
             </div>
@@ -126,6 +130,7 @@
     let split = 0.6; 
     let demandStr = 800; // Vehicles per hour per direction
     let arrivalDist = 'normal';
+    let simSpeed = 2.5;
     let simTime = 0; 
     let lastTime = performance.now();
     let historyWindow = 150; // Show the last 150 seconds of history
@@ -177,6 +182,7 @@
         split = parseInt(document.getElementById('split').value) / 100;
         demandStr = parseInt(document.getElementById('demand').value);
         arrivalDist = document.getElementById('arrivalType').value;
+        simSpeed = parseFloat(document.getElementById('speed').value);
         intersections[1].offset = parseInt(document.getElementById('offset2').value) % cycle;
         intersections[2].offset = parseInt(document.getElementById('offset3').value) % cycle;
         intersections[3].offset = parseInt(document.getElementById('offset4').value) % cycle;
@@ -185,6 +191,7 @@
         document.getElementById('cycleVal').innerText = cycle;
         document.getElementById('splitVal').innerText = Math.round(split * 100);
         document.getElementById('demandVal').innerText = demandStr;
+        document.getElementById('speedVal').innerText = simSpeed.toFixed(1);
         document.getElementById('off2Val').innerText = intersections[1].offset;
         document.getElementById('off3Val').innerText = intersections[2].offset;
         document.getElementById('off4Val').innerText = intersections[3].offset;
@@ -448,7 +455,7 @@
         lastTime = timestamp;
 
         // Accelerate simulation time slightly for better viewing
-        let timeStep = dt * 2.5; 
+        let timeStep = dt * simSpeed; 
         simTime += timeStep; 
 
         spawnVehicles();
