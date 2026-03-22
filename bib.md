@@ -24,7 +24,7 @@ window.MathJax = {
 
 ## Knowledge Repository
 
-Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, Junyi Ji developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
+Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, [Junyi Ji](https://www.jijunyi.com/) developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
 
 ### 1st Commit
 #### Signal Coordination
@@ -34,3 +34,6 @@ Signal coordination is the way to synchronize traffic signals along a corridor (
 My observations:
 - The red lights act like a "transformer," converting the arrival pattern into a different departure pattern.
 - The bidirectional nature of the traffic flow makes the problem more complex, as the signal coordination needs to consider both directions of traffic.
+
+**References**
+- [Koonce, Peter. Traffic signal timing manual. No. FHWA-HOP-08-024. United States. Federal Highway Administration, 2008.](https://rosap.ntl.bts.gov/view/dot/800/dot_800_DS1.pdf)
