@@ -29,7 +29,7 @@ Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)
 ### 1st Commit
 #### Signal Coordination
 
-Signal coordination is the way to synchronize traffic signals along a corridor (main road) to create a "green wave" that allows vehicles to pass through multiple intersections without stopping. To better understand the dynamics of this system, I build a web-based simulator tool called [Signal Puzzle](https://www.opentraffic.science/signal-puzzle) that simulates the dynamics of traffic near Vanderbilt University. By changing the signal lengths, green split, offset, and the demand (arrival rate and the headway distribution), we can see how the time-space diagrams change.
+Signal coordination is the way to synchronize traffic signals along a corridor (main road) to create a "green wave" that allows vehicles to pass through multiple intersections without stopping. To better understand the dynamics of this system, I build a web-based simulator tool called [Signal Puzzle](https://www.opentraffic.science/signal-puzzle) that simulates the dynamics of traffic [near Vanderbilt University](https://maps.app.goo.gl/3pP5rb7BngcB8nkW7). By changing the signal lengths, green split, offset, and the demand (arrival rate and the headway distribution), we can see how the time-space diagrams change.
 
 My observations:
 - The red lights act like a "transformer," converting the arrival pattern into a different departure pattern.
