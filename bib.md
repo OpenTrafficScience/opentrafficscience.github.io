@@ -37,4 +37,4 @@ My observations:
 
 **References**
 - [Koonce, P. (2008). Traffic signal timing manual (No. FHWA-HOP-08-024). United States. Federal Highway Administration.](https://rosap.ntl.bts.gov/view/dot/800/dot_800_DS1.pdf)
-- [Fischer, E. (2011, June 5). Traffic signal timing patterns on Oakland's Broadway [Photograph]. Flickr.](https://www.flickr.com/photos/walkingsf/5800930374/)
+- [Fischer, E. (2011). Traffic signal timing patterns on Oakland's Broadway [Photograph]. Flickr.](https://www.flickr.com/photos/walkingsf/5800930374/)
