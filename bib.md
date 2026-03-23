@@ -30,10 +30,13 @@ Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)
 #### Semidefinite Relaxations
 
 Nonconvex QCQPs (Quadratically Constrained Quadratic Programs) are a class of optimization problems that can be challenging to solve. We write a nonconvex QCQP in the following form:
-$$\begin{aligned}
-\min_{x^\top P_0 x + q_0^\top x + r_0} \\
-\text{subject to } x^\top P_i x + q_i^\top x + r_i \leq 0, \quad i = 1, \ldots, m
-\end{aligned}$$
+
+$$
+\begin{aligned}
+\min_{x} & \quad x^\top P_0 x + q_0^\top x + r_0 \\
+\text{subject to } & \quad x^\top P_i x + q_i^\top x + r_i \leq 0, \quad i = 1, \ldots, m
+\end{aligned}
+$$
 
 **References**
 - [d'Aspremont, A and Boyd, S. (2003). Relaxations and Randomized Methods for Nonconvex QCQPs. Stanford University.](https://stanford.edu/class/ee364b/lectures/relaxations.pdf)
