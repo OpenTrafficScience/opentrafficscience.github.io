@@ -30,9 +30,12 @@ Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)
 #### Orthogonal Procrustes Problem
 The orthogonal Procrustes problem asks: given two matrices $\mathbf{A}$ and $\mathbf{B}$, find an orthogonal matrix $\mathbf{Q}$ that minimizes
 $$
-\|\mathbf{A} - \mathbf{Q}\mathbf{B}\|_F^2
+\|\mathbf{A} - \mathbf{Q}\mathbf{B}\|_F^2,
 $$
 where $\|\cdot\|_F$ denotes the Frobenius norm. 
+
+**References**
+- [Cory Simon (2018). The orthogonal Procrustes problem. Cory Simon's personal website.](https://simonensemble.github.io/posts/2018-10-27-orthogonal-procrustes/)
 
 ### 2nd Commit
 #### Semidefinite Relaxations
