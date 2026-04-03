@@ -26,9 +26,9 @@ window.MathJax = {
 
 Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, [Junyi Ji](https://www.jijunyi.com/) developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
 
-### 2nd Commit
+### 3rd Commit
 #### Orthogonal Procrustes Problem
-The orthogonal Procrustes problem asks: given two matrices A and B, find an orthogonal matrix $\mathbf{Q}$ that minimizes
+The orthogonal Procrustes problem asks: given two matrices $\mathbf{A}$ and $\mathbf{B}$, find an orthogonal matrix $\mathbf{Q}$ that minimizes
 $$
 \|\mathbf{A} - \mathbf{Q}\mathbf{B}\|_F^2
 $$
