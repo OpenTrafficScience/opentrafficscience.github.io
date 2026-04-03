@@ -27,6 +27,14 @@ window.MathJax = {
 Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, [Junyi Ji](https://www.jijunyi.com/) developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
 
 ### 2nd Commit
+#### Orthogonal Procrustes Problem
+The orthogonal Procrustes problem asks: given two matrices A and B, find an orthogonal matrix $\mathbf{Q}$ that minimizes
+$$
+\|\mathbf{A} - \mathbf{Q}\mathbf{B}\|_F^2
+$$
+where $\|\cdot\|_F$ denotes the Frobenius norm. 
+
+### 2nd Commit
 #### Semidefinite Relaxations
 
 Nonconvex QCQPs (Quadratically Constrained Quadratic Programs) are a class of optimization problems that can be challenging to solve. We write a nonconvex QCQP in the following form:
@@ -34,7 +42,7 @@ Nonconvex QCQPs (Quadratically Constrained Quadratic Programs) are a class of op
 $$
 \begin{aligned}
 \min_{x} & \quad x^\top P_0 x + q_0^\top x + r_0 \\
-\text{subject to } & \quad x^\top P_i x + q_i^\top x + r_i \leq 0, \quad i = 1, \ldots, m
+\text{subject to } & \quad x^\top P_i x + q_i^\top x + r_i \leq 0, \quad i = 1, \ldots, m,
 \end{aligned}
 $$
 
