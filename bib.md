@@ -17,7 +17,10 @@ window.MathJax = {
     },
     tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        macros: {
+            top: "{\\mathsf{T}}"
+        }
     }
 };
 </script>
@@ -73,8 +76,8 @@ Nonconvex QCQPs (Quadratically Constrained Quadratic Programs) are a class of op
 
 $$
 \begin{aligned}
-\min_{x} & \quad x^\top P_0 x + q_0^\top x + r_0 \\
-\text{subject to } & \quad x^\top P_i x + q_i^\top x + r_i \leq 0, \quad i = 1, \ldots, m,
+\min_{x} & \quad x^{\top} P_0 x + q_0^{\top} x + r_0 \\
+\text{subject to } & \quad x^{\top} P_i x + q_i^{\top} x + r_i \leq 0, \quad i = 1, \ldots, m,
 \end{aligned}
 $$
 
