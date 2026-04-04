@@ -27,15 +27,43 @@ window.MathJax = {
 Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)'s [Knowledge Repository](https://spatiotemporal-data.github.io/bib/) and guided by his kind mentorship, [Junyi Ji](https://www.jijunyi.com/) developed this repository since early 2026 to document methodology and technology developments that bridge traffic systems with dynamical systems, control theory, and optimization methods. 
 
 ### 3rd Commit
+#### Frobenius Norm
+The Frobenius norm of a matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ is defined as the square root of the sum of the absolute squares of its elements:
+$$
+\|\mathbf{A}\|_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}.
+$$ It can also be expressed in terms of the trace of the product of the matrix and its conjugate transpose:
+$$
+\|\mathbf{A}\|_F = \sqrt{\text{trace}(\mathbf{A}^* \mathbf{A})}.
+$$
+It can be further related to the singular values of the matrix:
+$$
+\|\mathbf{A}\|_F = \sqrt{\sum_{i=1}^{\min(m,n)} \sigma_i^2},
+$$where $\sigma_i$ are the singular values of $\mathbf{A}$.
+
+As a proof here, we can first do the singular value decomposition (SVD) of $\mathbf{A}$:
+$$
+\mathbf{A} = \mathbf{U} \Sigma \mathbf{V}^*,
+$$where $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^{n \times n}$ are unitary matrices, and $\Sigma \in \mathbb{R}^{m \times n}$ is a diagonal matrix containing the singular values $\sigma_i$ of $\mathbf{A}$. Then we can compute the Frobenius norm as follows:
+$$
+\begin{aligned}
+\|\mathbf{A}\|_F^2 &= \text{trace}(\mathbf{A}^* \mathbf{A}) \\
+&= \text{trace}((\mathbf{U} \Sigma \mathbf{V}^*)^* (\mathbf{U} \Sigma \mathbf{V}^*)) \\
+&= \text{trace}(\mathbf{V} \Sigma^* \mathbf{U}^* \mathbf{U} \Sigma \mathbf{V}^*) \\
+&= \text{trace}(\mathbf{V} \Sigma^* \Sigma \mathbf{V}^*) \\
+&= \text{trace}(\Sigma^* \Sigma) \\
+&= \sum_{i=1}^{\min(m,n)} \sigma_i^2.
+\end{aligned}$$
+
 #### Orthogonal Procrustes Problem
 The orthogonal Procrustes problem asks: given two matrices $\mathbf{A}$ and $\mathbf{B}$, find an orthogonal matrix $\mathbf{Q}$ that minimizes
 $$
 \|\mathbf{A} - \mathbf{Q}\mathbf{B}\|_F^2,
 $$
-where $\|\cdot\|_F$ denotes the Frobenius norm. 
+where $\mathbf{A}, \mathbf{B} \in \mathbb{R}^{m \times n}$ and $\|\cdot\|_F$ denotes the Frobenius norm. 
 
 **References**
-- [Cory Simon (2018). The orthogonal Procrustes problem. Cory Simon's personal website.](https://simonensemble.github.io/posts/2018-10-27-orthogonal-procrustes/)
+- [Cory Simon (2018). The orthogonal procrustes problem. Cory Simon's personal website.](https://simonensemble.github.io/posts/2018-10-27-orthogonal-procrustes/)
+- [TensorFlow Playground](https://playground.tensorflow.org/)
 
 ### 2nd Commit
 #### Semidefinite Relaxations
