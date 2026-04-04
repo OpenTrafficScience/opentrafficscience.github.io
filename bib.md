@@ -36,7 +36,7 @@ $$
 \|\mathbf{A}\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2.
 $$ It can also be expressed in terms of the trace of the product of the matrix and its conjugate transpose:
 $$
-\|\mathbf{A}\|_F^2 = {\text{trace}(\mathbf{A}^* \mathbf{A})}.
+\|\mathbf{A}\|_F^2 = {\text{trace}(\mathbf{A}^\top \mathbf{A})}.
 $$
 It can be further related to the singular values of the matrix:
 $$
