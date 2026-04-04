@@ -30,14 +30,14 @@ Built on the foundation of [Xinyu Chen (陈新宇)](https://xinychen.github.io/)
 #### Frobenius Norm
 The Frobenius norm of a matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ is defined as the square root of the sum of the absolute squares of its elements:
 $$
-\|\mathbf{A}\|_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}.
+\|\mathbf{A}\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2.
 $$ It can also be expressed in terms of the trace of the product of the matrix and its conjugate transpose:
 $$
-\|\mathbf{A}\|_F = \sqrt{\text{trace}(\mathbf{A}^* \mathbf{A})}.
+\|\mathbf{A}\|_F^2 = {\text{trace}(\mathbf{A}^\top \mathbf{A})}.
 $$
 It can be further related to the singular values of the matrix:
 $$
-\|\mathbf{A}\|_F = \sqrt{\sum_{i=1}^{\min(m,n)} \sigma_i^2},
+\|\mathbf{A}\|_F^2 = \sum_{i=1}^{\min(m,n)} \sigma_i^2,
 $$where $\sigma_i$ are the singular values of $\mathbf{A}$.
 
 As a proof here, we can first do the singular value decomposition (SVD) of $\mathbf{A}$:
