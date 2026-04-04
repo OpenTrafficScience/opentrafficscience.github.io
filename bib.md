@@ -50,11 +50,12 @@ $$where $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^
 
 $$
 \begin{aligned}
-\|\mathbf{A}\|_F^2 &= \text{trace}(\mathbf{A}^* \mathbf{A}) \\
-&= \text{trace}((\mathbf{U} \Sigma \mathbf{V}^*)^* (\mathbf{U} \Sigma \mathbf{V}^*)) \\
-&= \text{trace}(\mathbf{V} \Sigma^* \mathbf{U}^* \mathbf{U} \Sigma \mathbf{V}^*) \\
-&= \text{trace}(\mathbf{V} \Sigma^* \Sigma \mathbf{V}^*) \\
-&= \text{trace}(\Sigma^* \Sigma) \\
+\|\mathbf{A}\|_F^2 &= \text{tr}(\mathbf{A}^* \mathbf{A}) \\
+&= \text{tr}((\mathbf{U} \Sigma \mathbf{V}^*)^* (\mathbf{U} \Sigma \mathbf{V}^*)) \\
+&= \text{tr}(\mathbf{V} \Sigma^* \mathbf{U}^* \mathbf{U} \Sigma \mathbf{V}^*) \\
+&= \text{tr}(\mathbf{V} \Sigma^* \Sigma \mathbf{V}^*) \\
+&= \text{tr}(\Sigma^* \Sigma) \mathbf{V}^* \mathbf{V} \\
+&= \text{tr}(\Sigma^* \Sigma) \\
 &= \sum_{i=1}^{\min(m,n)} \sigma_i^2.
 \end{aligned}$$
 
