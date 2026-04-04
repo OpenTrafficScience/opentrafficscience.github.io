@@ -44,6 +44,7 @@ As a proof here, we can first do the singular value decomposition (SVD) of $\mat
 $$
 \mathbf{A} = \mathbf{U} \Sigma \mathbf{V}^\top,
 $$where $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^{n \times n}$ are unitary matrices, and $\Sigma \in \mathbb{R}^{m \times n}$ is a diagonal matrix containing the singular values $\sigma_i$ of $\mathbf{A}$. Then we can compute the Frobenius norm as follows:
+
 $$
 \begin{aligned}
 \|\mathbf{A}\|_F^2 &= \text{trace}(\mathbf{A}^\top \mathbf{A}) \\
