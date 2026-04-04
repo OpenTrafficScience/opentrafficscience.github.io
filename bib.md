@@ -33,7 +33,7 @@ $$
 \|\mathbf{A}\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2.
 $$ It can also be expressed in terms of the trace of the product of the matrix and its conjugate transpose:
 $$
-\|\mathbf{A}\|_F^2 = {\text{trace}(\mathbf{A}^\top \mathbf{A})}.
+\|\mathbf{A}\|_F^2 = {\text{trace}(\mathbf{A}^* \mathbf{A})}.
 $$
 It can be further related to the singular values of the matrix:
 $$
@@ -42,13 +42,13 @@ $$where $\sigma_i$ are the singular values of $\mathbf{A}$.
 
 As a proof here, we can first do the singular value decomposition (SVD) of $\mathbf{A}$:
 $$
-\mathbf{A} = \mathbf{U} \Sigma \mathbf{V}^\top,
+\mathbf{A} = \mathbf{U} \Sigma \mathbf{V}^*,
 $$where $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^{n \times n}$ are unitary matrices, and $\Sigma \in \mathbb{R}^{m \times n}$ is a diagonal matrix containing the singular values $\sigma_i$ of $\mathbf{A}$. Then we can compute the Frobenius norm as follows:
 
 $$
 \begin{aligned}
-\|\mathbf{A}\|_F^2 &= \text{trace}(\mathbf{A}^\top \mathbf{A}) \\
-&= \text{trace}((\mathbf{U} \Sigma \mathbf{V}^\top)^\top (\mathbf{U} \Sigma \mathbf{V}^\top)) \\
+\|\mathbf{A}\|_F^2 &= \text{trace}(\mathbf{A}^* \mathbf{A}) \\
+&= \text{trace}((\mathbf{U} \Sigma \mathbf{V}^*)^* (\mathbf{U} \Sigma \mathbf{V}^*)) \\
 &= \text{trace}(\mathbf{V} \Sigma^* \mathbf{U}^* \mathbf{U} \Sigma \mathbf{V}^*) \\
 &= \text{trace}(\mathbf{V} \Sigma^* \Sigma \mathbf{V}^*) \\
 &= \text{trace}(\Sigma^* \Sigma) \\
