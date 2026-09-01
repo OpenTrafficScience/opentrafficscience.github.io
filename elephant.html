@@ -68,7 +68,23 @@
     margin-top: 40px;
   }
   @media (max-width: 880px) {
-    main { grid-template-columns: minmax(0, 1fr); }
+    .wrap { padding: 32px 18px 56px; }
+    main { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: 30px; }
+    /* Size the figure by the curve's own aspect ratio instead of a fixed
+       height, so a narrow screen gets a well-proportioned plot. */
+    .stage { min-height: 0; aspect-ratio: 21 / 19; padding: 4px; }
+    blockquote { font-size: 16.5px; }
+    .eq { font-size: 16px; padding: 12px 2px; }
+  }
+  /* Comfortable touch targets on coarse pointers. */
+  @media (pointer: coarse) {
+    input[type="range"] { height: 34px; }
+    input[type="range"]::-webkit-slider-thumb {
+      width: 22px; height: 22px; margin-top: -10px;
+    }
+    input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; }
+    .param { padding: 12px 0 8px; }
+    button { padding: 11px 22px; font-size: 14px; }
   }
 
   figure { margin: 0; }
@@ -363,7 +379,13 @@
 
     // Framed axes box with margins wide enough for tick labels AND the
     // rotated y(t) axis label, so nothing is clipped by the box or canvas.
-    var mL = 62, mR = 14, mT = 12, mB = 44;
+    // On narrow screens shrink the margins, fonts, and tick density so the
+    // plot itself keeps most of the width.
+    var small = w < 480;
+    var mL = small ? 46 : 62, mR = small ? 10 : 14, mT = small ? 10 : 12, mB = small ? 38 : 44;
+    var step = small ? 80 : 40;
+    var tickFont = (small ? 10 : 12) + 'px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
+    var axisFont = 'italic ' + (small ? 13 : 16) + 'px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
     var bx = mL, by = mT, bw = w - mL - mR, bh = h - mT - mB;
 
     // World box (curve spans x -71..84, y -61..83, plus wiggle headroom).
@@ -378,11 +400,11 @@
     ctx.lineWidth = 1;
     ctx.strokeStyle = COL.grid;
     ctx.beginPath();
-    for (var gx = -80; gx <= 100; gx += 40) {
+    for (var gx = -80; gx <= 100; gx += step) {
       var px = X(gx);
       if (px > bx + 1 && px < bx + bw - 1) { ctx.moveTo(px, by); ctx.lineTo(px, by + bh); }
     }
-    for (var gy = -80; gy <= 100; gy += 40) {
+    for (var gy = -80; gy <= 100; gy += step) {
       var py = Y(gy);
       if (py > by + 1 && py < by + bh - 1) { ctx.moveTo(bx, py); ctx.lineTo(bx + bw, py); }
     }
@@ -395,12 +417,12 @@
 
     // Ticks and numeric labels.
     ctx.fillStyle = COL.ink;
-    ctx.font = '12px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
+    ctx.font = tickFont;
     ctx.lineWidth = 1.25;
     ctx.beginPath();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    for (var tx = -80; tx <= 100; tx += 40) {
+    for (var tx = -80; tx <= 100; tx += step) {
       var tpx = X(tx);
       if (tpx < bx - 0.5 || tpx > bx + bw + 0.5) continue;
       ctx.moveTo(tpx, by + bh); ctx.lineTo(tpx, by + bh - 5);
@@ -409,7 +431,7 @@
     }
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    for (var ty = -80; ty <= 100; ty += 40) {
+    for (var ty = -80; ty <= 100; ty += step) {
       var tpy = Y(ty);
       if (tpy < by - 0.5 || tpy > by + bh + 0.5) continue;
       ctx.moveTo(bx, tpy); ctx.lineTo(bx + 5, tpy);
@@ -421,12 +443,12 @@
     // Axis labels in math italic, kept clear of the frame and tick labels:
     // x(t) sits below the tick numbers, y(t) rotates in the left margin,
     // anchored 12px from the canvas edge so it can never touch the box.
-    ctx.font = 'italic 16px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
+    ctx.font = axisFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText('x(t)', bx + bw / 2, by + bh + 24);
+    ctx.fillText('x(t)', bx + bw / 2, by + bh + (small ? 20 : 24));
     ctx.save();
-    ctx.translate(12, by + bh / 2);
+    ctx.translate(small ? 9 : 12, by + bh / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
