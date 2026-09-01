@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Von Neumann's Elephant</title>
+<style>
+  /* Publication-figure style: single deliberate light theme (a journal
+     figure is white paper), every color painted explicitly. */
+  :root {
+    --paper: #FFFFFF;
+    --ink: #111111;
+    --gray: #575757;
+    --hairline: #C9C9C9;
+    --grid: #E6E6E6;
+    --rule: #1A1A1A;
+    --blue: #0F52BA;
+    --red: #C1272D;
+    --red-soft: rgba(193, 39, 45, 0.07);
+    --sans: Palatino, "Palatino Linotype", "Book Antiqua", "URW Palladio L", "TeX Gyre Pagella", Georgia, serif;
+    --math: Palatino, "Palatino Linotype", "Book Antiqua", "URW Palladio L", "TeX Gyre Pagella", Georgia, serif;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 52px 24px 72px;
+  }
+
+  header { max-width: 68ch; }
+  h1 {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  blockquote {
+    margin: 0;
+    padding-left: 16px;
+    border-left: 2px solid var(--rule);
+    font-family: var(--math);
+    font-style: italic;
+    font-size: 18px;
+  }
+  blockquote footer {
+    margin-top: 6px;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 12.5px;
+    color: var(--gray);
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 36px;
+    align-items: start;
+    margin-top: 40px;
+  }
+  @media (max-width: 880px) {
+    main { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  figure { margin: 0; }
+  .stage {
+    border: 1px solid var(--hairline);
+    padding: 8px;
+    min-height: 430px;
+    display: flex;
+    background: var(--paper);
+  }
+  canvas { width: 100%; height: 100%; flex: 1; display: block; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 66ch;
+  }
+  figcaption .figno { font-weight: 700; letter-spacing: 0.06em; }
+  .m { font-family: var(--math); font-style: italic; }
+  .c-blue { color: var(--blue); font-weight: 600; }
+  .c-red { color: var(--red); font-weight: 600; }
+
+  /* Parameter table, booktabs-style: heavy top and bottom rules. */
+  .controls { font-variant-numeric: tabular-nums; }
+  .controls .tabno {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin: 0 0 8px;
+  }
+  .tbl {
+    border-top: 2px solid var(--rule);
+    border-bottom: 2px solid var(--rule);
+    padding: 4px 0 10px;
+  }
+  .param { padding: 10px 0 6px; border-bottom: 1px solid var(--grid); }
+  .param:nth-last-of-type(2) { border-bottom: 1px solid var(--rule); }
+  .param .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+  .param .name { font-family: var(--math); font-style: italic; }
+  .param .value { font-size: 13px; color: var(--gray); }
+
+  .param.fifth { border-bottom: none; background: var(--red-soft); padding: 12px 10px 8px; margin-top: 6px; }
+  .param.fifth .name, .param.fifth .value { color: var(--red); }
+  .param.fifth .note {
+    font-size: 12.5px;
+    color: var(--gray);
+    line-height: 1.55;
+    margin: 8px 0 2px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+  }
+  input[type="range"]:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px; background: var(--hairline);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--ink);
+    margin-top: -5.5px;
+  }
+  input[type="range"]::-moz-range-track { height: 2px; background: var(--hairline); }
+  input[type="range"]::-moz-range-thumb {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--ink);
+  }
+  .fifth input[type="range"]::-webkit-slider-thumb { border-color: var(--red); }
+  .fifth input[type="range"]::-moz-range-thumb { border-color: var(--red); }
+  .fifth input[type="range"]:focus-visible { outline-color: var(--red); }
+
+  .buttons { display: flex; gap: 10px; margin-top: 14px; }
+  button {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    padding: 7px 18px;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button:hover { background: var(--ink); color: var(--paper); }
+  button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  button.primary { background: var(--ink); color: var(--paper); }
+  button.primary:hover { background: var(--paper); color: var(--ink); }
+
+  .maths { margin-top: 44px; max-width: 72ch; }
+  .maths h2 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin: 0 0 12px;
+  }
+  .eq {
+    font-family: var(--math);
+    font-style: italic;
+    font-size: 17.5px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+    line-height: 1.9;
+  }
+  .maths p { color: var(--gray); font-size: 13.5px; }
+  .maths.refs { margin-top: 36px; }
+  .reflist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: ref;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .reflist li {
+    counter-increment: ref;
+    padding-left: 30px;
+    position: relative;
+    margin-bottom: 6px;
+    line-height: 1.6;
+  }
+  .reflist li::before {
+    content: "[" counter(ref) "]";
+    position: absolute;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Von Neumann&rsquo;s Elephant</h1>
+    <blockquote>
+      &ldquo;With four parameters I can fit an elephant, and with five I can make him wiggle his trunk.&rdquo;
+      <footer>— John von Neumann, as Enrico Fermi recounted it to Freeman Dyson [1]</footer>
+    </blockquote>
+  </header>
+
+  <main>
+    <figure>
+      <div class="stage"><canvas id="cv" aria-label="Animated parametric elephant curve in a framed axes box"></canvas></div>
+      <figcaption>
+        <span class="figno">FIG. 1.</span>
+        An elephant fitted with four complex parameters
+        <span class="m">p</span>&#8321;&hellip;<span class="m">p</span>&#8324;
+        (<span class="c-blue">blue</span>) [2]. The domain of the fifth parameter
+        <span class="m">p</span>&#8325; &mdash; the trunk &mdash; is drawn in
+        <span class="c-red">red</span> and wiggles with amplitude Re&thinsp;<span class="m">p</span>&#8325;;
+        Im&thinsp;<span class="m">p</span>&#8325; places the eye at (20,&thinsp;20) [2].
+      </figcaption>
+    </figure>
+
+    <aside class="controls" aria-label="Parameters">
+      <p class="tabno">Table I. Parameters</p>
+      <div class="tbl">
+        <div class="param">
+          <div class="row"><span class="name">p&#8321; = 50 &minus; 30i</span><span class="value" id="v1">&times;1.00</span></div>
+          <input type="range" id="s1" min="0" max="1.5" step="0.01" value="1" aria-label="Scale of parameter p1">
+        </div>
+        <div class="param">
+          <div class="row"><span class="name">p&#8322; = 18 + 8i</span><span class="value" id="v2">&times;1.00</span></div>
+          <input type="range" id="s2" min="0" max="1.5" step="0.01" value="1" aria-label="Scale of parameter p2">
+        </div>
+        <div class="param">
+          <div class="row"><span class="name">p&#8323; = 12 &minus; 10i</span><span class="value" id="v3">&times;1.00</span></div>
+          <input type="range" id="s3" min="0" max="1.5" step="0.01" value="1" aria-label="Scale of parameter p3">
+        </div>
+        <div class="param">
+          <div class="row"><span class="name">p&#8324; = &minus;14 &minus; 60i</span><span class="value" id="v4">&times;1.00</span></div>
+          <input type="range" id="s4" min="0" max="1.5" step="0.01" value="1" aria-label="Scale of parameter p4">
+        </div>
+
+        <div class="param fifth">
+          <div class="row"><span class="name">p&#8325; = 40 + 20i</span><span class="value" id="v5">Re p&#8325; = 0</span></div>
+          <input type="range" id="s5" min="0" max="15" step="1" value="0" aria-label="Wiggle amplitude, the real part of parameter p5, limited to 15">
+          <p class="note">The fifth parameter. Move it to make him wiggle. Its real part sets the trunk&rsquo;s swing; its imaginary part places the eye at (20,&thinsp;20). Limited to 0&ndash;15 so the curve stays smooth.</p>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" id="play" aria-pressed="true">Pause</button>
+        <button id="reset">Reset</button>
+      </div>
+    </aside>
+  </main>
+
+  <section class="maths">
+    <h2>The curve</h2>
+    <div class="eq">
+      x(t) = &minus;60 cos t + 30 sin t &minus; 8 sin 2t + 10 sin 3t<br>
+      y(t) = 50 sin t + 18 sin 2t &minus; 12 cos 3t + 14 cos 5t
+    </div>
+    <p>
+      Each complex parameter p&#8321;&hellip;p&#8324; carries two of the Fourier coefficients above [2] &mdash; four
+      complex numbers, eight real ones, and out comes an elephant. Drag a slider to zero to watch a
+      parameter&rsquo;s share of the animal disappear. The wiggle curls the trunk &mdash; the loop
+      reaching out on the right &mdash; about its attachment, with an amplitude that grows toward
+      the tip, driven by Re&thinsp;p&#8325;. The loops touching the ground are feet, and they stay planted.
+    </p>
+  </section>
+
+  <section class="maths refs">
+    <h2>References</h2>
+    <ol class="reflist">
+      <li>F. Dyson, &ldquo;A meeting with Enrico Fermi,&rdquo; <em>Nature</em> <b>427</b>, 297 (2004).</li>
+      <li>J. Mayer, K. Khairy, and J. Howard, &ldquo;Drawing an elephant with four complex parameters,&rdquo; <em>Am. J. Phys.</em> <b>78</b>, 648&ndash;649 (2010).</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var cv = document.getElementById('cv');
+  var ctx = cv.getContext('2d');
+  var N = 720;
+
+  var sliders = [1, 2, 3, 4, 5].map(function (i) { return document.getElementById('s' + i); });
+  var readouts = [1, 2, 3, 4, 5].map(function (i) { return document.getElementById('v' + i); });
+  var playBtn = document.getElementById('play');
+  var resetBtn = document.getElementById('reset');
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var playing = !reduced.matches;
+  var phase = 0;
+  var lastTime = null;
+  var dirty = true;
+
+  var COL = {
+    ink: '#111111', gray: '#575757', grid: '#E6E6E6',
+    blue: '#0F52BA', red: '#C1272D'
+  };
+
+  // Base curve, scaled by the four parameter sliders.
+  function point(t, s) {
+    var x = s[3] * (-60 * Math.cos(t)) + s[0] * (30 * Math.sin(t))
+          + s[1] * (-8 * Math.sin(2 * t)) + s[2] * (10 * Math.sin(3 * t));
+    var y = s[0] * (50 * Math.sin(t)) + s[1] * (18 * Math.sin(2 * t))
+          + s[2] * (-12 * Math.cos(3 * t)) + s[3] * (14 * Math.cos(5 * t));
+    return [x, y];
+  }
+
+  // The trunk is the curl reaching out to the right (x ≈ 50…84); the loops
+  // that touch the ground line at y ≈ −60 are feet and must stay planted.
+  // Rotate trunk points about the attachment, with a weight that fades to
+  // zero at the base and a phase lag outward so the curl travels.
+  var PIVOT_X = 46, PIVOT_Y = 4;
+  function trunkWeight(x) {
+    var w = Math.min(Math.max((x - 44) / 18, 0), 1); // 0 at the base, 1 out on the trunk
+    return Math.pow(w, 1.6);
+  }
+  function wiggle(x, y, amp, ph) {
+    var w = trunkWeight(x);
+    if (w === 0 || amp === 0) return [x, y];
+    var theta = amp * 0.011 * Math.sin(ph - w * 1.4) * w;
+    var dx = x - PIVOT_X, dy = y - PIVOT_Y;
+    var c = Math.cos(theta), sn = Math.sin(theta);
+    return [PIVOT_X + dx * c - dy * sn, PIVOT_Y + dx * sn + dy * c];
+  }
+
+  function resize() {
+    var dpr = window.devicePixelRatio || 1;
+    var r = cv.getBoundingClientRect();
+    cv.width = Math.round(r.width * dpr);
+    cv.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dirty = true;
+  }
+
+  function draw() {
+    var w = cv.clientWidth, h = cv.clientHeight;
+    if (w === 0 || h === 0) return;
+    ctx.clearRect(0, 0, w, h);
+
+    // Framed axes box with margins wide enough for tick labels AND the
+    // rotated y(t) axis label, so nothing is clipped by the box or canvas.
+    var mL = 62, mR = 14, mT = 12, mB = 44;
+    var bx = mL, by = mT, bw = w - mL - mR, bh = h - mT - mB;
+
+    // World box (curve spans x -71..84, y -61..83, plus wiggle headroom).
+    var x0 = -105, x1 = 105, y0 = -90, y1 = 100;
+    var scale = Math.min(bw / (x1 - x0), bh / (y1 - y0));
+    var cx = bx + bw / 2 - ((x0 + x1) / 2) * scale;
+    var cy = by + bh / 2 + ((y0 + y1) / 2) * scale;
+    function X(x) { return cx + x * scale; }
+    function Y(y) { return cy - y * scale; }
+
+    // Light interior grid at the tick positions.
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = COL.grid;
+    ctx.beginPath();
+    for (var gx = -80; gx <= 100; gx += 40) {
+      var px = X(gx);
+      if (px > bx + 1 && px < bx + bw - 1) { ctx.moveTo(px, by); ctx.lineTo(px, by + bh); }
+    }
+    for (var gy = -80; gy <= 100; gy += 40) {
+      var py = Y(gy);
+      if (py > by + 1 && py < by + bh - 1) { ctx.moveTo(bx, py); ctx.lineTo(bx + bw, py); }
+    }
+    ctx.stroke();
+
+    // Frame.
+    ctx.strokeStyle = COL.ink;
+    ctx.lineWidth = 1.25;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    // Ticks and numeric labels.
+    ctx.fillStyle = COL.ink;
+    ctx.font = '12px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var tx = -80; tx <= 100; tx += 40) {
+      var tpx = X(tx);
+      if (tpx < bx - 0.5 || tpx > bx + bw + 0.5) continue;
+      ctx.moveTo(tpx, by + bh); ctx.lineTo(tpx, by + bh - 5);
+      ctx.moveTo(tpx, by); ctx.lineTo(tpx, by + 5);
+      ctx.fillText(String(tx), tpx, by + bh + 6);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var ty = -80; ty <= 100; ty += 40) {
+      var tpy = Y(ty);
+      if (tpy < by - 0.5 || tpy > by + bh + 0.5) continue;
+      ctx.moveTo(bx, tpy); ctx.lineTo(bx + 5, tpy);
+      ctx.moveTo(bx + bw, tpy); ctx.lineTo(bx + bw - 5, tpy);
+      ctx.fillText(String(ty), bx - 7, tpy);
+    }
+    ctx.stroke();
+
+    // Axis labels in math italic, kept clear of the frame and tick labels:
+    // x(t) sits below the tick numbers, y(t) rotates in the left margin,
+    // anchored 12px from the canvas edge so it can never touch the box.
+    ctx.font = 'italic 16px Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('x(t)', bx + bw / 2, by + bh + 24);
+    ctx.save();
+    ctx.translate(12, by + bh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('y(t)', 0, 0);
+    ctx.restore();
+
+    var s = sliders.map(function (el) { return parseFloat(el.value); });
+    // Keep the wiggle in [0, 15]: the weight ramp w^1.6 is C1-continuous, so
+    // the deformed curve stays smooth as long as the rotation is gentle;
+    // larger angles shear the trunk base and sweep the tip into the head.
+    var amp = Math.min(Math.max(s[4], 0), 15);
+
+    // Precompute the deformed curve once.
+    var pts = new Array(N + 1);
+    var wts = new Array(N + 1);
+    for (var i = 0; i <= N; i++) {
+      var t = (i / N) * 2 * Math.PI;
+      var p = point(t, s);
+      wts[i] = trunkWeight(p[0]);
+      pts[i] = wiggle(p[0], p[1], amp, phase);
+    }
+
+    // Body in blue.
+    ctx.beginPath();
+    for (i = 0; i <= N; i++) {
+      if (i === 0) ctx.moveTo(X(pts[i][0]), Y(pts[i][1]));
+      else ctx.lineTo(X(pts[i][0]), Y(pts[i][1]));
+    }
+    ctx.closePath();
+    ctx.strokeStyle = COL.blue;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Trunk — the fifth parameter's domain — overdrawn in red.
+    ctx.beginPath();
+    var open = false;
+    for (i = 0; i <= N; i++) {
+      if (wts[i] > 0.02) {
+        if (!open) { ctx.moveTo(X(pts[i][0]), Y(pts[i][1])); open = true; }
+        else ctx.lineTo(X(pts[i][0]), Y(pts[i][1]));
+      } else {
+        open = false;
+      }
+    }
+    ctx.strokeStyle = COL.red;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Eye at (Im p5, Im p5) = (20, 20), per Mayer et al. Fades out with
+    // p1/p4 so it vanishes along with the head.
+    var eyeVis = Math.min(s[0], s[3]);
+    if (eyeVis > 0.25) {
+      ctx.globalAlpha = Math.min((eyeVis - 0.25) / 0.5, 1);
+      ctx.beginPath();
+      ctx.arc(X(20), Y(20), Math.max(2.5 * scale, 2), 0, 2 * Math.PI);
+      ctx.fillStyle = COL.ink;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function frame(now) {
+    if (playing) {
+      if (lastTime !== null) phase += Math.min(now - lastTime, 100) * 0.0035;
+      lastTime = now;
+      draw();
+    } else {
+      lastTime = null;
+      if (dirty) { draw(); dirty = false; }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function updateReadouts() {
+    for (var i = 0; i < 4; i++) {
+      readouts[i].textContent = '×' + parseFloat(sliders[i].value).toFixed(2);
+    }
+    readouts[4].textContent = 'Re p₅ = ' + sliders[4].value;
+  }
+
+  sliders.forEach(function (el) {
+    el.addEventListener('input', function () { updateReadouts(); dirty = true; });
+  });
+
+  playBtn.addEventListener('click', function () {
+    playing = !playing;
+    playBtn.textContent = playing ? 'Pause' : 'Wiggle';
+    playBtn.setAttribute('aria-pressed', String(playing));
+    dirty = true;
+  });
+
+  resetBtn.addEventListener('click', function () {
+    sliders.forEach(function (el, i) { el.value = i < 4 ? 1 : 0; });
+    updateReadouts();
+    dirty = true;
+  });
+
+  if (!playing) playBtn.textContent = 'Wiggle';
+
+  window.addEventListener('resize', resize);
+
+  updateReadouts();
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
